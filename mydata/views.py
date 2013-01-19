@@ -10,4 +10,4 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 
 def test1(request):
-    return render_to_response('dojango/test1.html')
+    return render_to_response('test1.html')
