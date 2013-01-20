@@ -1086,6 +1086,7 @@ require([
     }
 
     commonDialog = function(attrs) {
+	alert("marvin");
         canceled = false;
         dialog = new Dialog({
             id: attrs.id,
