@@ -62,10 +62,6 @@
 			window.__globalList[i] = true;
 		}
 	</script>
-<script type="text/javascript" src="/static/{{ STATIC_URL }}lib/js/freeadmin.js"></script>
-	<script type="text/javascript">
-volumeWizard('Volume Manager', '/storage/wizard/', [this,]);
-	</script>
 {% endblock %}
 
 {% block dojango_body %}
@@ -215,7 +211,8 @@ volumeWizard('Volume Manager', '/storage/wizard/', [this,]);
 </div>
 </div>
 <script type="text/javascript">
-    dojo.require("dojox.grid.DataGrid");
+console.log("#########");
+dojo.require("dojox.grid.DataGrid");
 dojo.require("dojox.data.CsvStore");
 dojo.require("dijit.dijit");
 dojo.require("dojox.layout.TableContainer");
@@ -259,7 +256,17 @@ dojo.addOnLoad(function() {
     grid4.startup();
 });
 </script>
-
+<script type="text/javascript" src="/static/{{ STATIC_URL }}lib/js/freeadmin.js"></script>
+<script type="text/javascript" src="/static/{{ STATIC_URL }}lib/js/marvin.js"></script>
+<script>
+    var dojoConfig = {
+        async: true,
+        packages: [{
+            name: "demo",
+            location: location.pathname.replace(/\/[^/]*$/,'')
+        }]
+};
+</script>
 	<script type="text/javascript"> // dojo.requires()
 
 var loadingEl = dojo.byId("loaderInner");
@@ -358,6 +365,15 @@ var loadingEl = dojo.byId("loaderInner");
 			if(strayGlobals.length){
 				console.warn("Stray globals: "+strayGlobals.join(", "));
 			}
+		console.log("here!!");
+		dojo.require(["demo/myModule"], function(myModule){
+			
+			// Use our module to change the text in the greeting
+			myModule.hello1();
+			console.log("$$$$");
+
+		});
+
 		});
 
 	</script>

@@ -11,3 +11,6 @@ from django.template import RequestContext
 
 def test1(request):
     return render_to_response('test1.html')
+
+def test2(request):
+    return render_to_response('test2.html')

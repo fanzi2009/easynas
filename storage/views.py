@@ -10,7 +10,6 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 
 
-from middleware.notifier import *
 from middleware.text2html import *
 from middleware.marvin_nas import *
 
