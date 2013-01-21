@@ -1,10 +1,11 @@
 <html>
 <head>
-<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/dojo/1.8.1/dijit/themes/claro/claro.css" media="screen">
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/dojo/1.8.3/dijit/themes/claro/claro.css" media="screen">
 </head>
 <body class="claro">
 		<script>
 			var dojoConfig = {
+				parseOnLoad : true,
 				dojoBlankHtmlUrl: location.pathname.replace(/\/[^/]+$/, '') + '/blank.html',
 				packages: [{
 					name: 'custom',
@@ -13,15 +14,15 @@
 			};
 		</script>
 		<script src="//ajax.googleapis.com/ajax/libs/dojo/1.8.3/dojo/dojo.js"></script>
-		<script>
 
+
+<button data-dojo-type="dijit/form/Button" type="button">Create ZPool
+    <script type="dojo/on" data-dojo-event="click" data-dojo-args="evt">
 			require([ "custom/nasadmin"], function(nasadmin){
-				nasadmin().mytest1("hello Marvin!");
+				nasadmin().volumeWizard('Volume Manager', '/static/test.txt', [this,]);
 			});
-		</script>
-
-
-
+    </script>
+</button>
 
 </body>
 </html>

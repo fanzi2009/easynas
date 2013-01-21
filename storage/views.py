@@ -50,3 +50,8 @@ def pool_status(request):
     result = notifier().zpool_status()
     #result = text2html(result)
     return HttpResponse(result)
+
+def wizard(request):
+    result = notifier().zpool_status()
+    #result = text2html(result)
+    return HttpResponse(result)
