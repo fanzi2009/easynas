@@ -1,26 +1,27 @@
-<!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="/static/css/claro.css">
-<script>
-var dojoConfig = {
-	parseOnLoad: true,
-    baseUrl: "/static/",
-    tlmSiblingOfDojo: false,
-    packages: [
-		{ name: "dojo", location: "//ajax.googleapis.com/ajax/libs/dojo/1.8.1/dojo" },
-        { name: "my", location: "lib/js",main:"nasadmin"}
-    ]
-};
-</script>
-<script data-dojo-config="async: true" src="//ajax.googleapis.com/ajax/libs/dojo/1.8.1/dojo/dojo.js"></script>
-<script src="/static/lib/js/nasadmin.js"></script>
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/dojo/1.8.1/dijit/themes/claro/claro.css" media="screen">
 </head>
 <body class="claro">
- <script>
-         require(["my"], function(nasadmin){
-			nasadmin.hello1("111111111");
-        });
- </script>
+		<script>
+			var dojoConfig = {
+				dojoBlankHtmlUrl: location.pathname.replace(/\/[^/]+$/, '') + '/blank.html',
+				packages: [{
+					name: 'custom',
+					location: '/static/lib/js'
+				}]
+			};
+		</script>
+		<script src="//ajax.googleapis.com/ajax/libs/dojo/1.8.3/dojo/dojo.js"></script>
+		<script>
+
+			require([ "custom/nasadmin"], function(nasadmin){
+				nasadmin().mytest1("hello Marvin!");
+			});
+		</script>
+
+
+
+
 </body>
 </html>
