@@ -52,6 +52,4 @@ def pool_status(request):
     return HttpResponse(result)
 
 def wizard(request):
-    result = notifier().zpool_status()
-    #result = text2html(result)
-    return HttpResponse(result)
+    return render_to_response('wizard.html')

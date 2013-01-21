@@ -19,7 +19,7 @@
 <button data-dojo-type="dijit/form/Button" type="button">Create ZPool
     <script type="dojo/on" data-dojo-event="click" data-dojo-args="evt">
 			require([ "custom/nasadmin"], function(nasadmin){
-				nasadmin().volumeWizard('Volume Manager', '/static/test.txt', [this,]);
+				nasadmin().volumeWizard('Volume Manager', '/storage/wizard', [this,]);
 			});
     </script>
 </button>
