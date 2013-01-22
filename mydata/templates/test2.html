@@ -8,8 +8,8 @@
 				parseOnLoad : true,
 				dojoBlankHtmlUrl: location.pathname.replace(/\/[^/]+$/, '') + '/blank.html',
 				packages: [{
-					name: 'custom',
-					location: '/static/lib/js'
+					name: 'my',
+					location: '/static/js/my'
 				}]
 			};
 		</script>
@@ -17,8 +17,8 @@
 
 <button data-dojo-type="dijit/form/Button" type="button">Create ZPool
     <script type="dojo/on" data-dojo-event="click" data-dojo-args="evt">
-			require([ "custom/nasadmin"], function(nasadmin){
-				nasadmin().volumeWizard('Volume Manager', '/storage/wizard', [this,]);
+			require([ "my/volumeWizard"], function(volumeWizard){
+				volumeWizard('Volume Manager', '/static/1.txt', [this,]);
 			});
     </script>
 </button>
