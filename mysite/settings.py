@@ -11,8 +11,8 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'easy_nas.db',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -142,7 +142,17 @@ LOGGING = {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
-        }
+        },
+        'console':{
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+        },
+        'log_file':{
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename':'logconfig.log'
+        },
+
     },
     'loggers': {
         'django.request': {
@@ -150,5 +160,11 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+        'easynas': {
+            'handlers': ['log_file','console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+
     }
 }

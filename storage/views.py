@@ -8,11 +8,18 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
+from django.core.context_processors import csrf
 
+from django.http import QueryDict
 
 from middleware.text2html import *
 from middleware.marvin_nas import *
 
+from storage.models import ZPool
+
+import logging
+
+logger = logging.getLogger('easynas.web')
 
 #http://192.168.80.128:8080/storage/pool_status
 #http://192.168.80.128:8080/storage/get_disks
@@ -52,4 +59,42 @@ def pool_status(request):
     return HttpResponse(result)
 
 def wizard(request):
-    return render_to_response('wizard.html')
+
+    logger.info('wizard request!')
+
+    if request.method == 'POST':
+        result = ""
+
+        if request.POST["volume_name"] == "":
+            result = "Thel volume name cannot be empty!"
+            return HttpResponse(result)
+
+        if (len(ZPool.objects.filter(volume_name=request.POST["volume_name"])) !=0 ):
+            result = "Thel volume has existed!"
+            return HttpResponse(result)
+
+        if (not request.POST.has_key("volume_disks")):
+            result = "Please choose disks!"
+            return HttpResponse(result)
+
+        volume_disks = request.POST.getlist("volume_disks")
+
+        logger.info(volume_disks)
+
+        # zpool  = ZPool(volume_name = request.POST["volume_name"])
+        # zpool.save()
+
+        result = "OK"
+        return HttpResponse(result)
+
+    context = {}
+    context.update(csrf(request))
+
+    disks = [
+        {"name":"ad1","capacity":100},
+        {"name":"ad3","capacity":400},
+        {"name":"ad4","capacity":200},
+        ]
+    context["disks"] = disks
+
+    return render_to_response('wizard.html',context)
