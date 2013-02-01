@@ -1,6 +1,5 @@
-define([], function(){
-	sayHello = function(str){
-		console.log(str);
-	};
-	return sayHello;
-});
+var registry = require("dijit/registry");
+sayHello = function(str){
+	console.log(str);
+};
+return sayHello;
