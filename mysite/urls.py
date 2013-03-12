@@ -5,9 +5,7 @@ from django.conf.urls import patterns, include, url
 # admin.autodiscover()
 
 urlpatterns = patterns('',
-    (r'^dojango/', include('dojango.urls')),
-    (r'^mydata/', include('mydata.urls')),
-    (r'^storage/', include('storage.urls')),
+    (r'^easynas/', include('easynas.urls')),
     # Examples:
     # url(r'^$', 'mysite.views.home', name='home'),
     # url(r'^mysite/', include('mysite.foo.urls')),

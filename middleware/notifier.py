@@ -1079,7 +1079,7 @@ class notifier:
                 zfsproc = self.__pipeopen("zfs destroy %s" % (path))
             retval = zfsproc.communicate()[1]
             if zfsproc.returncode == 0:
-                from freenasUI.storage.models import Task, Replication
+                from freenasUI.easynas.models import Task, Replication
                 Task.objects.filter(task_filesystem=path).delete()
                 Replication.objects.filter(repl_filesystem=path).delete()
         if not retval:
@@ -1382,12 +1382,12 @@ class notifier:
              tricky problem to fix in a way that doesn't unnecessarily suck up
              resources, but also ensures that the user is provided with
              meaningful data.
-        XXX: divorce this from storage.models; depending on storage.models
+        XXX: divorce this from easynas.models; depending on easynas.models
              introduces a circular dependency and creates design ugliness.
         XXX: implement destruction algorithm for non-UFS/-ZFS.
 
         Parameters:
-            volume: a storage.models.Volume object.
+            volume: a easynas.models.Volume object.
 
         Raises:
             MiddlewareError: the volume could not be detached cleanly.
@@ -3021,7 +3021,7 @@ class notifier:
             return ''
 
     def swap_from_diskid(self, diskid):
-        from freenasUI.storage.models import Disk
+        from freenasUI.easynas.models import Disk
         disk = Disk.objects.get(id=diskid)
         return self.part_type_from_device('swap', disk.devname)
 
@@ -3079,7 +3079,7 @@ class notifier:
         return parse
 
     def sync_disk(self, devname):
-        from freenasUI.storage.models import Disk
+        from freenasUI.easynas.models import Disk
 
         self.__diskserial.clear()
 
@@ -3106,7 +3106,7 @@ class notifier:
         disk.save()
 
     def sync_disks(self):
-        from freenasUI.storage.models import Disk
+        from freenasUI.easynas.models import Disk
 
         disks = self.__get_disks()
         self.__diskserial.clear()
@@ -3169,7 +3169,7 @@ class notifier:
         #FIXME: This should not be here
         from django.core.urlresolvers import reverse
         from django.utils import simplejson
-        from freenasUI.storage.models import Disk
+        from freenasUI.easynas.models import Disk
         provider = self.get_label_consumer('ufs', volume.vol_name)
         if not provider:
             raise ValueError("UFS Volume %s not found" % (volume,))
@@ -3195,7 +3195,7 @@ class notifier:
                 if qs:
                     actions = {'edit_url': reverse('freeadmin_model_edit',
                         kwargs={
-                        'app':'storage',
+                        'app':'easynas',
                         'model': 'Disk',
                         'oid': qs[0].id,
                         })+'?deletable=false'}
@@ -3212,7 +3212,7 @@ class notifier:
             for i in xrange(len(consumers), ncomponents):
                 #FIXME: This should not be here
                 actions = {
-                    'replace_url': reverse('storage_geom_disk_replace', kwargs={'vname': volume.vol_name})
+                    'replace_url': reverse('easynas_geom_disk_replace', kwargs={'vname': volume.vol_name})
                 }
                 items.append({
                     'type': 'disk',
@@ -3228,7 +3228,7 @@ class notifier:
             if qs:
                 actions = {'edit_url': reverse('freeadmin_model_edit',
                     kwargs={
-                    'app':'storage',
+                    'app':'easynas',
                     'model': 'Disk',
                     'oid': qs[0].id,
                     })+'?deletable=false'}
@@ -3300,7 +3300,7 @@ class notifier:
         If the disk is not currently in use by some Volume or iSCSI Disk Extent
         then a gmultipath is automatically created and will be available for use
         """
-        from freenasUI.storage.models import Volume, Disk
+        from freenasUI.easynas.models import Volume, Disk
 
         doc = self.__geom_confxml()
 
@@ -3403,9 +3403,9 @@ class notifier:
 
 
     def __get_disks(self):
-        """Return a list of available storage disks.
+        """Return a list of available easynas disks.
 
-        The list excludes all devices that cannot be reserved for storage,
+        The list excludes all devices that cannot be reserved for easynas,
         e.g. the root device, CD drives, etc.
 
         Returns:
