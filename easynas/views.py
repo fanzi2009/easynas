@@ -109,6 +109,3 @@ def wizard(request):
 
 def test(request):
     return render_to_response('test.html')
-
-def test2(request):
-    return render_to_response('test2.html')

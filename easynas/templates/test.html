@@ -31,13 +31,31 @@
 	<script data-dojo-config="async: true, parseOnLoad: true" src="//ajax.googleapis.com/ajax/libs/dojo/1.8.3/dojo/dojo.js"></script>
 
 	<script>
+		var deletePool = null;
+		var afterSleep = function (){
+			location.reload();
+		}
 
+		require(["dojo/store/JsonRest"], function(JsonRest){
+			deletePool = function(id){
+			var answer = confirm("Are you sure delete pool?");
+
+			if(answer){
+				var store = new JsonRest({
+					target: "/easynas/zpools/"
+				});
+				store.remove(id);
+				setTimeout("afterSleep()",500);
+				}
+			}
+		});
+		
 		require([
 			"dojo/_base/declare", "dgrid/Grid",
 			"dojo/request", 
 			"dojo/domReady!"
 		],function(declare, Grid, request){
-			
+
 			request.get("/easynas/zpools", {
 				handleAs: "json",
 		                headers: {
@@ -52,10 +70,11 @@
 						{ label: "disks", field: "disks" },
 						{
 							label: " ",
-							field: "volume_name",
+							field: "id",
 							sortable: false,
-							formatter: function(volume_name){
-								return '<a href="#">delete</a>';
+							formatter: function(id){
+								var temp = '<a href="#" onClick=deletePool("' + id + '")>delete</a>';
+								return temp;
 							}
 						}
 					],
