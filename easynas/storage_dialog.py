@@ -39,12 +39,12 @@ def create_zpool(request):
         ]
     context["disks"] = disks
 
-    return render_to_response('storage\dialog\create_zpool.html',context)
+    return render_to_response('storage/dialog/create_zpool.html',context)
 
 
 def list_zpool(request):
 
     logger.info('list_zpool')
 
-    return render_to_response('storage\dialog\list_zpool.html',context)
+    return render_to_response('storage/dialog/list_zpool.html',context)
     
