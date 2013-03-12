@@ -1,0 +1,134 @@
+<html>
+<head>
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/dojo/1.8.3/dojo/resources/dojo.css">
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/dojo/1.8.3/dijit/themes/claro/claro.css">
+<link rel="stylesheet" href="/static/css/dgrid.css" />
+<link rel="stylesheet" href="/static/css/claro.css" />
+
+	<!-- load Dojo -->
+	<script>
+		var dojoConfig;
+		(function(){
+			//var baseUrl = location.pathname.replace(/\/[^/]+$/, "/../static/js/");
+			var baseUrl = "/static/js/";
+
+			dojoConfig = {
+				async: 1,
+				cacheBust: "1.8.3-0.3.5",
+				// Load dgrid and its dependencies from a local copy.
+				// If we were loading everything locally, this would not
+				// be necessary, since Dojo would automatically pick up
+				// dgrid, xstyle, and put-selector as siblings of the dojo folder.
+				packages: [
+					{ name: "dgrid", location: baseUrl + "dgrid" },
+					{ name: "xstyle", location: baseUrl + "xstyle" },
+					{ name: "put-selector", location: baseUrl + "put-selector" },
+					{ name: "my", location: baseUrl + "my" }
+				]
+			};
+		}());
+	</script>
+	<script data-dojo-config="async: true, parseOnLoad: true" src="//ajax.googleapis.com/ajax/libs/dojo/1.8.3/dojo/dojo.js"></script>
+
+	<script>
+		var deletePool = null;
+		var afterSleep = function (){
+			location.reload();
+		}
+
+		require(["dojo/store/JsonRest"], function(JsonRest){
+			deletePool = function(id){
+			var answer = confirm("Are you sure delete pool?");
+
+			if(answer){
+				var store = new JsonRest({
+					target: "/easynas/zpools/"
+				});
+				store.remove(id);
+				setTimeout("afterSleep()",500);
+				}
+			}
+		});
+		
+		require([
+			"dojo/_base/declare", "dgrid/Grid",
+			"dojo/request", 
+			"dojo/domReady!"
+		],function(declare, Grid, request){
+
+			request.get("/easynas/zpools", {
+				handleAs: "json",
+		                headers: {
+			           Accept: "*/*"
+		                }
+			}).then(function(data){
+
+				var CustomGrid = declare([ Grid ]);
+				var grid = new CustomGrid({
+					columns: [
+						{ label: "volume_name", field: "volume_name" },
+						{ label: "disks", field: "disks" },
+						{
+							label: " ",
+							field: "id",
+							sortable: false,
+							formatter: function(id){
+								var temp = '<a href="#" onClick=deletePool("' + id + '")>delete</a>';
+								return temp;
+							}
+						}
+					],
+					cellNavigation: false
+				}, "grid");
+				grid.renderArray(data);
+			});
+        });
+
+		require(["dojo/parser", "dijit/form/Button"]);
+	</script>
+</head>
+<body class="claro">
+<button data-dojo-type="dijit/form/Button" type="button">Create ZPool
+    <script type="dojo/on" data-dojo-event="click" data-dojo-args="evt">
+			require([ "my/createZPool"], function(createZPool){
+				createZPool([this,]);
+			});
+    </script>
+</button>
+
+<button data-dojo-type="dijit/form/Button" type="button">My Test
+    <script type="dojo/on" data-dojo-event="click" data-dojo-args="evt">
+require(["dojo/store/JsonRest"], function(JsonRest){
+  var store = new JsonRest({
+    target: "/easynas/zpools/"
+  });
+
+  // Query for objects with options
+  store.get("1").then(function(results){
+		console.log(results)
+  });
+
+});
+    </script>
+</button>
+
+<button data-dojo-type="dijit/form/Button" type="button">My Test2
+    <script type="dojo/on" data-dojo-event="click" data-dojo-args="evt">
+require(["dojo/store/JsonRest"], function(JsonRest){
+  var store = new JsonRest({
+    target: "/easynas/zpools"
+  });
+  var myJson = {
+    "volume_name": "MarvinTest", 
+    "disks": "ad100"
+	}
+  store.put(myJson);
+
+});
+
+    </script>
+</button>
+<div id="grid">
+</div>
+</body>
+</html>

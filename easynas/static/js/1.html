@@ -1,0 +1,25 @@
+<html>
+<head>
+    <title>Tutorial: Hello </title>
+	<script data-dojo-config="async: true, parseOnLoad: true" src="//ajax.googleapis.com/ajax/libs/dojo/1.8.3/dojo/dojo.js"></script>
+	<script>
+	var temp = 0;
+require(["dojo/dom", "dojo/domReady!"], function(dom){
+  temp = 100;
+  console.log(temp);  //it's OK
+});
+    </script>
+</head>
+<body>
+    <script>
+		console.log("++++++++");
+		console.log(temp); // Uncaught ReferenceError: temp is not defined 
+    </script>
+
+    <script>
+require(["dojo/request", "dojo/domReady!"], function(request){
+  console.log(temp); //it's OK
+});
+    </script>
+</body>
+</html>
