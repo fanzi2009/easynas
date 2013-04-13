@@ -29,11 +29,10 @@ class marvin_nas(object):
         cmd = 'dd if=/dev/zero of=%s bs=1m count=1' % disk
         self.__system(cmd)
 
-    def __add_disk_into_pool(self,pool_name, gpt_disks, single_gpt_disk):
-        if single_gpt_disk:
-            cmd = "zpool create -o autoexpand=on -O aclmode=passthrough -O aclinherit=passthrough -f -m /%s -o altroot=/mnt %s %s" % (pool_name,pool_name,gpt_disks)
-        else:
-            cmd = "zpool create -o autoexpand=on -O aclmode=passthrough -O aclinherit=passthrough -f -m /%s -o altroot=/mnt %s raidz %s" % (pool_name,pool_name,gpt_disks)
+    def __add_disk_into_pool(self,pool_name, pool_type, gpt_disks):
+        if pool_type=='stripe':
+            pool_type = ''
+        cmd = "zpool create -o autoexpand=on -O aclmode=passthrough -O aclinherit=passthrough -f -m /%s -o altroot=/mnt %s %s %s" % (pool_name,pool_name,pool_type,gpt_disks)
         p = self.__pipeopen(cmd)
         p.communicate()
         if p.returncode !=0:
@@ -51,7 +50,7 @@ class marvin_nas(object):
         cmd =  "swapoff -a"
         self.__system(cmd)
 
-    def create_zfs_pool(self,pool_name,disks):
+    def create_zfs_pool(self,pool_name,pool_type,disks):
         gpt_disks = []
         self.__swapoff_all()
         for x in disks:
@@ -61,11 +60,7 @@ class marvin_nas(object):
             #FIXME I don' know how to enumerte all disk when destroy pool
             #self.__swapon("/dev/gptid/%s" % gpt_label[0])
 
-        if len(disks) == 1:
-            single_gpt_disk = True
-        else:
-            single_gpt_disk = False
-        self.__add_disk_into_pool(pool_name, " ".join(gpt_disks), single_gpt_disk)
+        self.__add_disk_into_pool(pool_name, pool_type, " ".join(gpt_disks))
 
     def destroy_zfs_pool(self,pool_name):
         cmd = "zpool destroy %s" % (pool_name)
@@ -73,6 +68,33 @@ class marvin_nas(object):
         p.communicate()
         if p.returncode !=0:
             raise MiddlewareError("zpool destroy failed! ")
+
+    def create_ufs_pool_SD(self,pool_name,disk):
+        """create ufs pool for single disk"""
+        self.__gpt_labeldisk(disk , type = "freebsd-ufs")
+        gpt_label = self.__gpt_getlabel(disk)
+        cmd = "newfs -U -L %s /dev/gptid/%s" % (pool_name, gpt_label[1])
+        p = self.__pipeopen(cmd)
+        p.communicate()
+        if p.returncode !=0:
+            raise MiddlewareError("UFS create failed! ")
+
+
+    def create_ufs_pool(self,pool_name,pool_type,disks):
+        gpt_disks = []
+        self.__swapoff_all()
+        if len(disks)==1:
+            return self.create_ufs_pool_SD(pool_name,disks[0])
+        #newfs -U -L UFSSD /dev/da0p2
+
+        # for x in disks:
+        #     self.__gpt_labeldisk(x , type = "freebsd-ufs")
+        #     gpt_label = self.__gpt_getlabel(x)
+        #     gpt_disks.append("/dev/gptid/%s" % gpt_label[1])
+        #     #FIXME I don' know how to enumerte all disk when destroy pool
+        #     #self.__swapon("/dev/gptid/%s" % gpt_label[0])
+
+        # self.__add_disk_into_pool(pool_name, pool_type, " ".join(gpt_disks))
 
 
     def __gpt_getlabel(self, devname):
